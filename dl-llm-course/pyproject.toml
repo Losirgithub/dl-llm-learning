@@ -1,0 +1,20 @@
+# 课程根级工程配置
+# 作用：统一所有课程的代码风格、import 排序、类型检查目标版本
+# 安装工具后在课程根目录运行：ruff check . / ruff format .
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+# E/F: 基础错误与风格; I: import 排序; UP: 语法现代化; B: 常见 bug 隐患
+select = ["E", "F", "I", "UP", "B"]
+# 排除实验目录里的临时文件
+exclude = ["notebooks"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
