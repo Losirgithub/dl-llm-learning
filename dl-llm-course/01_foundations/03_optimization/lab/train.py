@@ -9,11 +9,23 @@
 
 from __future__ import annotations
 
+import os
+
+# 必须在导入 matplotlib 之前设置：绕过 Windows 上 numpy/matplotlib 各自带 OpenMP 冲突的问题
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
+
 import sys
 from pathlib import Path
 
+import matplotlib
+
+matplotlib.use("Agg")  # 非交互后端，只保存 PNG 不弹窗
 import matplotlib.pyplot as plt
 import numpy as np
+
+# matplotlib 默认字体不含中文，用 Windows 自带的黑体
+plt.rcParams["font.sans-serif"] = ["SimHei", "Microsoft YaHei"]
+plt.rcParams["axes.unicode_minus"] = False  # 修正负号显示
 
 # 引入课程通用工具（固定 seed 保证可复现）
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
@@ -40,12 +52,12 @@ def grad(x: float, y: float) -> np.ndarray:
 # 优化器实现（手写，不用 torch.optim）
 # 所有优化器都返回收敛路径 [(x0,y0), (x1,y1), ...]，方便后面画图
 # --------------------------------------------------------------------------
-def optimize_gd(
-    start: np.ndarray, lr: float, n_steps: int, add_noise: bool = False
-) -> np.ndarray:
+def optimize_gd(start: np.ndarray, lr: float, n_steps: int, add_noise: bool = False) -> np.ndarray:
     """朴素梯度下降 GD；add_noise=True 时模拟 SGD 的 mini-batch 噪声。"""
-    theta = start.copy()
-    path = [theta.copy()]
+    theta = start.copy()  # 当前的参数点，一个二维向量
+    path = [
+        theta.copy()
+    ]  # copy() = 复制一份新的独立对象，直接path=theta会导致path里每个元素都是同一个对象，后续修改theta会影响path里的所有元素
     for _ in range(n_steps):
         g = grad(theta[0], theta[1])
         if add_noise:
@@ -56,16 +68,14 @@ def optimize_gd(
     return np.array(path)
 
 
-def optimize_momentum(
-    start: np.ndarray, lr: float, n_steps: int, beta: float = 0.9
-) -> np.ndarray:
+def optimize_momentum(start: np.ndarray, lr: float, n_steps: int, beta: float = 0.9) -> np.ndarray:
     """Momentum：累积历史梯度，形成惯性。"""
     theta = start.copy()
     v = np.zeros(2)  # 速度变量
     path = [theta.copy()]
     for _ in range(n_steps):
         g = grad(theta[0], theta[1])
-        v = beta * v - lr * g  # 累积速度
+        v = beta * v - lr * g  # 累积速度,beta是保留的历史速度
         theta = theta + v
         path.append(theta.copy())
     return np.array(path)
@@ -115,9 +125,14 @@ def plot_paths(paths: dict[str, np.ndarray], save_path: Path) -> None:
     colors = {"GD": "tab:blue", "SGD": "tab:orange", "Momentum": "tab:green", "Adam": "tab:red"}
     for name, path in paths.items():
         ax.plot(
-            path[:, 0], path[:, 1],
-            "-o", color=colors[name], markersize=3, linewidth=1.5, alpha=0.85,
-            label=f"{name} ({len(path)-1} steps)",
+            path[:, 0],
+            path[:, 1],
+            "-o",
+            color=colors[name],
+            markersize=3,
+            linewidth=1.5,
+            alpha=0.85,
+            label=f"{name} ({len(path) - 1} steps)",
         )
         # 起点标记
         ax.plot(path[0, 0], path[0, 1], "k*", markersize=15, zorder=5)

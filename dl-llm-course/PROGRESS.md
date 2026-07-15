@@ -5,8 +5,9 @@
 ## 当前位置
 
 - 阶段：Stage 1 - 深度学习数学基础
-- 正在学：L1.2 已完成
-- 下一步：L1.3 数值优化（梯度下降、SGD、Momentum、Adam 对比）
+- 阶段：Stage 2 - 神经网络与训练
+- 正在学：L2.2 已完成
+- 下一步：L2.3 CNN（在 CIFAR-10 上训练 ResNet，正式用到 GPU 加速）
 
 ## 掌握检查点台账
 
@@ -17,6 +18,9 @@
 | L0.3 双机与局域网协同 | 🔶 进行中 | 部分 | SSH远程开发✅(今日实操)；DDP延后到有训练脚本 |
 | L1.1 概率与统计视角 | ✅ 完成 | 部分 | MLE推MSE/交叉熵掌握；MLE定义/MSEvsRMSE/误差vs数据 3处概念需精确 |
 | L1.2 信息论 | ✅ 完成 | 熟练 | 熵/交叉熵/KL全通过；混淆过熵与自信息(已纠正) |
+| L1.3 数值优化 | ✅ 完成 | 熟练 | 手写四种优化器实验通过；三题全对；Adam计算过程写详细在笔记 |
+| L2.1 PyTorch 张量与自动微分 | ✅ 完成 | 熟练 | autograd 版与手写 Adam 结果完全一致；概念(数值vs符号/前向vs反向)已澄清 |
+| L2.2 MLP 与训练循环 | ✅ 完成 | 熟练 | 亲手实现4个TODO；MNIST达97.76%峰值；观察到过拟合萌芽并理解 |
 
 状态图例：⬜ 未开始 / 🔶 进行中 / ✅ 完成 / 🔁 待复习
 
@@ -37,6 +41,7 @@
 | 4 | 运行 .ps1 脚本报"禁止运行脚本(ExecutionPolicy)" | 工程性 | 1 | Windows PowerShell 默认禁止运行未签名脚本 | `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`（无需管理员） | 已克服 |
 | 5 | pip 报"File contains no section headers"，行首出现 `锘縖` 乱码 | 工程性 | 1 | PowerShell `Out-File -Encoding utf8` 写入带 BOM，pip 解析 ini 不认 BOM | 写配置文件用无 BOM 编码：`[System.IO.File]::WriteAllText($path, $content, [System.Text.UTF8Encoding]::new($false))` | 观察中 |
 | 6 | MLE 定义说成"找极大值"；MSE 说成"均方根误差(RMSE)"；说"数据服从正态" | 概念性 | 1 | 漏关键词；混淆损失函数与评估指标；误把数据当误差 | MLE=找让似然最大的参数；推导出 MSE(非 RMSE)；是预测误差 ε=y-ŷ 服从正态，非数据本身 | 观察中 |
+| 7 | Windows conda 环境 numpy+matplotlib 报 `OMP Error #15` 崩溃 | 工程性 | 1 | numpy 和 matplotlib 各自带一份 Intel OpenMP dll，加载冲突 | 在**导入 matplotlib 之前**设 `os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"`；`matplotlib.use()` 来得太晚 | 观察中 |
 
 归类：概念性 / 工程性 / 习惯性　状态：观察中 / 反复出现 / 已克服
 

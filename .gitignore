@@ -1,0 +1,86 @@
+# ==== Python ====
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+*.egg
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# ==== 虚拟环境 ====
+.venv/
+venv/
+env/
+ENV/
+
+# ==== 数据集（原始/下载/缓存）====
+# 通用 data 目录，包括 torchvision/HF 下载缓存
+data/
+datasets/
+**/lab/data/
+*.tar.gz
+*.tar
+*.zip
+*.gz
+*.7z
+# HuggingFace/torch 缓存
+.cache/
+huggingface/
+
+# ==== 模型权重 / 检查点 ====
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.bin
+*.onnx
+*.h5
+*.pkl
+*.joblib
+checkpoints/
+runs/
+logs/
+wandb/
+mlruns/
+tb_logs/
+lightning_logs/
+
+# ==== 生成的图表/输出 ====
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+!**/notes/**/*.png
+!**/assets/**/*.png
+# 允许 notes 或 assets 目录下的插图，其他生成图默认忽略
+
+# ==== 大数据格式 ====
+*.npz
+*.npy
+*.parquet
+*.arrow
+*.feather
+
+# ==== IDE / OS ====
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ==== Jupyter ====
+.ipynb_checkpoints/
+*-checkpoint.ipynb
+
+# ==== 环境变量 / 密钥 ====
+.env
+.env.local
+*.key
+secrets.json
