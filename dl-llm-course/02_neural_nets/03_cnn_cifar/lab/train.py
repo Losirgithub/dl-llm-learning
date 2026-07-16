@@ -20,6 +20,7 @@ from torchvision import datasets, transforms
 
 # 引入课程通用工具
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
+from common.data_utils import get_dataset_dir  # noqa: E402
 from common.utils import set_seed  # noqa: E402
 
 
@@ -107,8 +108,8 @@ def get_dataloaders(batch_size: int = 128) -> tuple[DataLoader, DataLoader]:
             transforms.Normalize(mean, std),  # 归一化到均值 0 方差 1
         ]
     )
-    # ---- 数据集本身 ----
-    data_dir = Path(__file__).parent / "data"
+    # ---- 数据集本身(用课程根 data/,所有实验共享,避免重复占空间) ----
+    data_dir = get_dataset_dir("CIFAR10")
     train_set = datasets.CIFAR10(str(data_dir), train=True, download=True, transform=transform)
     test_set = datasets.CIFAR10(str(data_dir), train=False, download=True, transform=transform)
     # ---- DataLoader 包装 ----

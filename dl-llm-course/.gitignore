@@ -1,0 +1,34 @@
+# ==== 数据集(所有实验共享,不入 Git) ====
+data/
+
+# ==== 模型权重与训练产物 ====
+*.pt
+*.pth
+*.ckpt
+best.pt
+
+# ==== 实验追踪 ====
+wandb/
+lightning_logs/
+runs/            # tensorboard
+
+# ==== Python ====
+__pycache__/
+*.pyc
+*.pyo
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# ==== 虚拟环境 ====
+.venv/
+venv/
+
+# ==== IDE ====
+.vscode/
+.idea/
+*.swp
+
+# ==== 系统 ====
+.DS_Store
+Thumbs.db

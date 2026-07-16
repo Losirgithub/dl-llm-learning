@@ -18,6 +18,7 @@ from torchvision import datasets, transforms
 
 # 引入课程通用工具
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
+from common.data_utils import get_dataset_dir  # noqa: E402
 from common.utils import set_seed  # noqa: E402
 
 
@@ -75,7 +76,7 @@ def get_dataloaders(batch_size: int = 128) -> tuple[DataLoader, DataLoader]:
             transforms.Normalize((0.1307,), (0.3081,)),  # MNIST 官方均值方差归一化
         ]
     )
-    data_dir = Path(__file__).parent / "data"
+    data_dir = get_dataset_dir("MNIST")
     train_set = datasets.MNIST(str(data_dir), train=True, download=True, transform=transform)
     test_set = datasets.MNIST(str(data_dir), train=False, download=True, transform=transform)
     train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
@@ -136,7 +137,7 @@ def evaluate(model: nn.Module, loader: DataLoader, device: torch.device) -> floa
         #   - 预测类别 = logits.argmax(dim=1)  形状 (batch,)
         #   - 和 y 逐元素比较,再 .sum().item() 得到正确数
         #   - 把它累加到 correct;把 batch 大小累加到 total
-        predicted = logits.argmax(dim=1)  # 预测类别
+        predicted = logits.argmax(dim=1)  # 预测类别，argmax 返回最大值的索引
         correct += (predicted == y).sum().item()  # 累加正确
         total += y.size(0)  # 累加总数
         # raise NotImplementedError("请实现准确率计算")
