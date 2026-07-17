@@ -4,9 +4,9 @@
 
 ## 当前位置
 
-- 阶段：Stage 2 完成 ✅ 准备进 Stage 3 注意力与 Transformer
-- 正在学：Stage 2 全部结课
-- 下一步：L3.1 注意力机制（Q/K/V, self-attention, multi-head）—— 通往 LLM 的关键枢纽
+- 阶段：Stage 3 - 注意力与 Transformer
+- 正在学：L3.1 已完成
+- 下一步：L3.2 从零手写完整 Transformer（位置编码、Encoder/Decoder、mask、字符级语言模型训练）
 
 ## 掌握检查点台账
 
@@ -23,6 +23,7 @@
 | L2.3 CNN | ✅ 完成 | 熟练 | 亲手实现3个TODO；CIFAR-10达78.19%峰值(比MLP强33个点)；再次观察过拟合 |
 | L2.4 正则化与训练调优 | ✅ 完成 | 熟练 | 6大技术全用上；CIFAR-10达82.82%(vs L2.3 78.19%)；过拟合被完全压住 |
 | L2.5 RNN/LSTM(理论) | ✅ 完成 | 熟练 | 理解 RNN 隐状态、梯度消失/爆炸、LSTM 门控、为什么 Transformer 取代 RNN；跳过实验直接进 Stage 3 |
+| L3.1 注意力机制 | ✅ 完成 | 熟练 | 手写 scaled dot-product + Multi-Head Attention；与 PyTorch 官方 allclose 验证通过；公式验证实验非训练实验 |
 
 状态图例：⬜ 未开始 / 🔶 进行中 / ✅ 完成 / 🔁 待复习
 
