@@ -4,9 +4,9 @@
 
 ## 当前位置
 
-- 阶段：Stage 3 - 注意力与 Transformer
-- 正在学：L3.1 已完成
-- 下一步：L3.2 从零手写完整 Transformer（位置编码、Encoder/Decoder、mask、字符级语言模型训练）
+- 阶段：Stage 5 - 对齐基础
+- 正在学：L5.1 已完成
+- 下一步：L5.2 RLHF(RLHF 三阶段、奖励模型、PPO、KL 缰绳)--Stage 5 核心
 
 ## 掌握检查点台账
 
@@ -24,6 +24,15 @@
 | L2.4 正则化与训练调优 | ✅ 完成 | 熟练 | 6大技术全用上；CIFAR-10达82.82%(vs L2.3 78.19%)；过拟合被完全压住 |
 | L2.5 RNN/LSTM(理论) | ✅ 完成 | 熟练 | 理解 RNN 隐状态、梯度消失/爆炸、LSTM 门控、为什么 Transformer 取代 RNN；跳过实验直接进 Stage 3 |
 | L3.1 注意力机制 | ✅ 完成 | 熟练 | 手写 scaled dot-product + Multi-Head Attention；与 PyTorch 官方 allclose 验证通过；公式验证实验非训练实验 |
+| L3.2 Transformer 全架构 | ✅ 完成 | 熟练 | 4积木+EncoderBlock+DecoderBlock+完整Decoder-Only+字符级LM训练+文本生成；loss 0.0543；生成莎士比亚风格文本 |
+| L3.3 预训练范式 | ✅ 完成 | 熟练 | BERT vs GPT 对比、BPE、Scaling Law 全掌握；HF 体验 GPT-2/BERT；观察到预训练模型"学坏"现象(预接 Stage 6) |
+| L4.1 HuggingFace 生态 | ✅ 完成 | 熟练 | AutoClass 加载 Qwen2.5-1.5B 本地对话成功；掌握 chat template、device_map、4-bit 量化；理解上下文窗口与记忆管理 |
+| L4.2 PEFT(LoRA/QLoRA) | ✅ 完成 | 熟练 | QLoRA 微调 Qwen2.5-1.5B 成功(8GB显存,40epoch,loss4.56->0.10)；学会固定格式输出；踩坑:训练量不足推不翻强先验 |
+| L4.3 分布式训练 | 🔁 理论完成/执行跳过 | 理解 | DDP 原理(数据并行/梯度同步)、torchrun、init/wrap/sampler 三步已掌握；执行因 Windows libuv+gloo 坑跳过,正经分布式应用 Linux/WSL2 |
+| L4.4 推理优化与部署 | 🔁 理论完成/执行跳过 | 理解 | KV cache(含显存计算)、PagedAttention、Continuous Batching、vLLM API、OpenAI SDK 全掌握；执行因 Windows 不支持 vLLM 跳过 |
+| L4.5 模型服务化 | ⏭️ 跳过 | - | 依赖 vLLM,Windows 做不完整；服务化概念已掌握,Stage 6 时搭 WSL2 一次性配 |
+| L5.1 SFT 指令微调 | ✅ 完成 | 熟练 | L4.2 已实操 SFT(QLoRA)；本课补理论:SFT vs 预训练区别、SFT 局限(为何需 RLHF) |
+| L4.2 PEFT(LoRA/QLoRA) | 🔶 进行中 | - | 已建立 QLoRA 实验骨架；待完成 LoRA 配置与指令数据集 TODO |
 
 状态图例：⬜ 未开始 / 🔶 进行中 / ✅ 完成 / 🔁 待复习
 
@@ -48,6 +57,10 @@
 | 8 | Conv2d 参数量算成 `out×in`（漏了 kernel_size²）；说 CNN 优化"滤波器"不精确 | 概念性 | 1 | 卷积核是 k×k 小矩阵不是单个数；变量指数值不是抽象概念 | 参数量 = `out × in × k² + out`；训练优化的是卷积核里的**权重数值**（3×3 中的 9 个数） | 观察中 |
 | 9 | model.eval() 的意义误解为"用不同数据集"；数据增强不用测试集的原因误解为"可复现" | 概念性 | 1 | 混淆 model 模式开关和数据划分；混淆数据增强的核心动机 | eval() 关掉 Dropout/BN 训练行为，让模型稳定预测；测试不加增强是因为要衡量"真实分布"表现，不是可复现 | 观察中 |
 | 10 | Windows PowerShell 里给了 Linux 命令(cp -r 复制目录) | 工程性 | 1 | tutor 反射性给 bash 语法 | Windows 用 `Copy-Item -Recurse`(PowerShell) 或 `xcopy /E /I`(cmd)；后续命令要 Windows-native | 观察中 |
+| 11 | GPU 推理时新建的 idx tensor 在 CPU，报 "Expected all tensors to be on the same device" | 工程性 | 1 | 新建 tensor 默认在 CPU，模型在 GPU，embedding 查表设备不匹配 | 推理时新建的 tensor 要 `.to(device)`；用 `next(model.parameters()).device` 取模型设备，不用单独传参 | 观察中 |
+| 12 | HuggingFace `from_pretrained` 报 vocab_file is None / 下载失败 | 工程性 | 1 | huggingface.co 国内访问不稳定 | 设 `os.environ["HF_ENDPOINT"]="https://hf-mirror.com"`，**必须在 import transformers 之前**；或全局设用户环境变量 | 观察中 |
+| 13 | HF 模型下载到 C 盘，C 盘空间不足报错 | 工程性 | 1 | HF 默认缓存 `C:\Users\...\.cache\huggingface` | 设 `os.environ["HF_HOME"]="E:/hf_cache"`(E 盘)；或全局设用户环境变量。模型大(7B ~15GB)必须放非 C 盘 | 观察中 |
+| 14 | Windows 上 torchrun 报 "use_libuv was requested but PyTorch was built without libuv" | 工程性 | 1 | Windows 版 PyTorch 没编译 libuv，但 TCPStore 默认要用 | `os.environ["USE_LIBUV"]="0"`，**必须在 import torch.distributed 之前**设 | 观察中 |
 
 归类：概念性 / 工程性 / 习惯性　状态：观察中 / 反复出现 / 已克服
 
